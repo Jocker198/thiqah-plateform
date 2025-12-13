@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>منصة ثقة</title>
   <style>
-    /* تصميم أساسي احترافي بالألوان الأسود والذهبي */
     body {
       font-family: 'Arial', sans-serif;
       margin: 0;
@@ -75,6 +74,8 @@
       max-width: 600px;
       width: 90%;
       position: relative;
+      max-height: 80vh;
+      overflow-y: auto;
     }
     .close {
       position: absolute;
@@ -94,7 +95,7 @@
     input[type="file"] {
       padding: 5px;
     }
-    .btn-submit {
+    .btn-submit, .btn-cancel {
       background-color: #f5d200;
       border: none;
       color: #0b0b0b;
@@ -105,8 +106,12 @@
       margin-top: 10px;
       transition: 0.3s;
     }
-    .btn-submit:hover {
+    .btn-submit:hover, .btn-cancel:hover {
       background-color: #e1be00;
+    }
+    .btn-cancel {
+      background-color: #555;
+      color: #f5d200;
     }
     .cards {
       display: flex;
@@ -157,7 +162,7 @@
 </header>
 
 <!-- نموذج تسجيل المتجر -->
-<div id="registerModal" class="modal">
+<div id="registerModal" class="modal" onclick="clickOutside(event,'registerModal')">
   <div class="modal-content">
     <span class="close" onclick="closeModal('registerModal')">&times;</span>
     <h2>تسجيل متجرك</h2>
@@ -172,12 +177,13 @@
       <input type="file" accept="video/*" placeholder="رفع فيديو تعريفي للمتجر">
       <textarea placeholder="أضف قائمة المنتجات مع وصف كل منتج" rows="5"></textarea>
       <button type="submit" class="btn-submit">تسجيل المتجر</button>
+      <button type="button" class="btn-cancel" onclick="closeModal('registerModal')">إلغاء</button>
     </form>
   </div>
 </div>
 
 <!-- نموذج الإبلاغ عن متجر محتال -->
-<div id="reportModal" class="modal">
+<div id="reportModal" class="modal" onclick="clickOutside(event,'reportModal')">
   <div class="modal-content">
     <span class="close" onclick="closeModal('reportModal')">&times;</span>
     <h2>الإبلاغ عن متجر محتال</h2>
@@ -186,18 +192,20 @@
       <textarea placeholder="وصف المشكلة أو الاحتيال" rows="4" required></textarea>
       <input type="file" accept="image/*,video/*" placeholder="رفع دليل (اختياري)">
       <button type="submit" class="btn-submit">إرسال البلاغ</button>
+      <button type="button" class="btn-cancel" onclick="closeModal('reportModal')">إلغاء</button>
     </form>
   </div>
 </div>
 
 <!-- نموذج البحث عن المنتجات -->
-<div id="searchModal" class="modal">
+<div id="searchModal" class="modal" onclick="clickOutside(event,'searchModal')">
   <div class="modal-content">
     <span class="close" onclick="closeModal('searchModal')">&times;</span>
     <h2>ابحث عن منتج</h2>
     <form id="searchForm">
       <input type="text" placeholder="اكتب اسم المنتج للبحث..." required>
       <button type="submit" class="btn-submit">بحث</button>
+      <button type="button" class="btn-cancel" onclick="closeModal('searchModal')">إلغاء</button>
     </form>
     <div class="cards" id="productResults"></div>
   </div>
@@ -263,8 +271,12 @@
   function closeModal(id) {
     document.getElementById(id).style.display = 'none';
   }
+  function clickOutside(e, id) {
+    if(e.target.id === id) {
+      closeModal(id);
+    }
+  }
 
-  // أمثلة على نتائج البحث (يمكن ربطها لاحقًا بـGoogle Sheets أو قاعدة بيانات)
   const productResults = document.getElementById('productResults');
   document.getElementById('searchForm').addEventListener('submit', function(e){
     e.preventDefault();
